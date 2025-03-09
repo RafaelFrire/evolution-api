@@ -512,7 +512,7 @@ export class BaileysStartupService extends ChannelStartupService {
         where: {
           instanceId: this.instanceId,
           key: {
-            path: ['id'],
+            path: 'id',
             equals: key.id,
           },
         },
@@ -1450,7 +1450,7 @@ export class BaileysStartupService extends ChannelStartupService {
             where: {
               instanceId: this.instanceId,
               key: {
-                path: ['id'],
+                path: 'id',
                 equals: key.id,
               },
             },
@@ -1591,7 +1591,7 @@ export class BaileysStartupService extends ChannelStartupService {
       const savedLabel = labelsRepository.find((l) => l.labelId === label.id);
       if (label.deleted && savedLabel) {
         await this.prismaRepository.label.delete({
-          where: { labelId_instanceId: { instanceId: this.instanceId, labelId: label.id } },
+          where: { id: label.id },
         });
         this.sendDataWebhook(Events.LABELS_EDIT, { ...label, instance: this.instance.name });
         return;
@@ -1609,10 +1609,7 @@ export class BaileysStartupService extends ChannelStartupService {
           };
           await this.prismaRepository.label.upsert({
             where: {
-              labelId_instanceId: {
-                instanceId: labelData.instanceId,
-                labelId: labelData.labelId,
-              },
+              id: label.id,
             },
             update: labelData,
             create: labelData,
@@ -3555,7 +3552,7 @@ export class BaileysStartupService extends ChannelStartupService {
           let message = await this.prismaRepository.message.findFirst({
             where: {
               key: {
-                path: ['id'],
+                path: 'id',
                 equals: messageId,
               },
             },
@@ -4360,8 +4357,8 @@ export class BaileysStartupService extends ChannelStartupService {
     const result = await this.prismaRepository.message.updateMany({
       where: {
         AND: [
-          { key: { path: ['remoteJid'], equals: remoteJid } },
-          { key: { path: ['fromMe'], equals: false } },
+          { key: { path: 'remoteJid', equals: remoteJid } },
+          { key: { path: 'fromMe', equals: false } },
           { messageTimestamp: { lte: timestamp } },
           {
             OR: [{ status: null }, { status: status[3] }],
@@ -4388,8 +4385,8 @@ export class BaileysStartupService extends ChannelStartupService {
       this.prismaRepository.message.count({
         where: {
           AND: [
-            { key: { path: ['remoteJid'], equals: remoteJid } },
-            { key: { path: ['fromMe'], equals: false } },
+            { key: { path: 'remoteJid', equals: remoteJid } },
+            { key: { path: 'fromMe', equals: false } },
             { status: { equals: status[3] } },
           ],
         },
